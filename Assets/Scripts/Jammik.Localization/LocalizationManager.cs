@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using Jammik.Localization.Interfaces;
 using UnityEngine;
 
@@ -21,7 +22,18 @@ namespace Jammik.Localization
                                                                               new DefaultResourcesLocalizationDictionaryProvider(_settings);
 
             _unknownKeyService = new UnknownKeyService(_settings.UnknownKeyPolitics, _settings.DefaultString);
-            _dictionary = localizationDictionaryProviderInternal.LoadDictionary();
+            try
+            {
+                _dictionary = localizationDictionaryProviderInternal.LoadDictionary();
+            }
+            catch (DataException e)
+            {
+                if (_settings.TestMode)
+                {
+                    Debug.LogError($"{PackagePrefix} {e.Message}");
+                }
+            }
+            
         }
         
         public string Get(string localizationKey)

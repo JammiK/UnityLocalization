@@ -1,10 +1,7 @@
- 
 {
   "name": "com.jammik.unity-localization",
-	"displayName": "Unity localization manager",
-	"description": "",
+  "displayName": "Unity localization manager",
   "version": "1.0.0",
-	"unity": "2019.2",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -12,7 +9,5 @@
   },
   "src": "/Assets/Scripts/Jammik.Localization/",
   "author": "jammik <jammik94@gmail.com> (https://github.com/JammiK)",
-  "editorOnly": false,
-  "dependencies": {
-  }
+  "editorOnly": false
 }
