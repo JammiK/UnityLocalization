@@ -7,7 +7,7 @@
     "type": "git",
     "url": "git+https://github.com/JammiK/UnityLocalization.git"
   },
-  "src": "/Assets/Scripts/Jammik.Localization/",
+  "src": "Assets/Scripts/Jammik.Localization",
   "author": "jammik <jammik94@gmail.com> (https://github.com/JammiK)",
   "editorOnly": false
 }
