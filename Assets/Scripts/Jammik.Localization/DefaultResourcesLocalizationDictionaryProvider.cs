@@ -10,14 +10,15 @@ namespace Jammik.Localization
     public class DefaultResourcesLocalizationDictionaryProvider : ILocalizationDictionaryProvider
     {
         readonly ILanguageProvider _languageProvider;
-        string _directoryPath;
         readonly string _fileNameFormat;
         readonly IDefaultResourceDictionarySettings _settings;
         readonly ILocalizationDictionaryParser _localizationDictionaryParser;
+        
+        string _directoryPath;
 
         public DefaultResourcesLocalizationDictionaryProvider(IDefaultResourceDictionarySettings settings,
-            ILanguageProvider languageProvider = null,
-            ILocalizationDictionaryParser localizationDictionaryParser = null)
+            ILocalizationDictionaryParser localizationDictionaryParser,
+            ILanguageProvider languageProvider = null)
         {
             _languageProvider = languageProvider ?? new DefaultLanguageProvider();
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -40,6 +41,7 @@ namespace Jammik.Localization
 
             if (language == _settings.DefaultLanguage)
             {
+                return new Dictionary<string, string>();
                 throw new DataException($"Unable to find storage for localization.");
             }
             
@@ -51,7 +53,13 @@ namespace Jammik.Localization
 
             throw new DataException($"Unable to find storage for localization.");
         }
-        
+
+        public IDictionary<string, string> LoadDictionary(SystemLanguage language)
+        {
+            var dictionary = LoadDictionaryInternal(language);
+            return dictionary ?? LoadDictionary();
+        }
+
         IDictionary<string, string> LoadDictionaryInternal(SystemLanguage language)
         {
             var path = GetPathForLanguage(language);

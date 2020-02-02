@@ -10,21 +10,26 @@ namespace Jammik.Localization
     {
         const string PackagePrefix = "[Localization Manager]:";
         
-        readonly IDictionary<string, string> _dictionary;
         readonly ILocalizationManagerSettings _settings;
         readonly IUnknownKeyService _unknownKeyService;
+        readonly ILocalizationDictionaryProvider _localizationDictionaryProvider;
 
+        IDictionary<string, string> _dictionary;
+        
         public LocalizationManager(ILocalizationManagerSettings settings,
-            ILocalizationDictionaryProvider localizationDictionaryProvider)
+            ILocalizationDictionaryProvider localizationDictionaryProvider,
+            ILanguageProvider languageProvider,
+            ILocalizationDictionaryParser localizationDictionaryParser)
         {
             _settings = settings ?? new LocalizationManagerSettings();
-            var localizationDictionaryProviderInternal = localizationDictionaryProvider ??
-                                                                              new DefaultResourcesLocalizationDictionaryProvider(_settings);
+            _localizationDictionaryProvider = localizationDictionaryProvider ??
+                                              new DefaultResourcesLocalizationDictionaryProvider(_settings,
+                                                  localizationDictionaryParser, languageProvider);
 
             _unknownKeyService = new UnknownKeyService(_settings.UnknownKeyPolitics, _settings.DefaultString);
             try
             {
-                _dictionary = localizationDictionaryProviderInternal.LoadDictionary();
+                _dictionary = _localizationDictionaryProvider.LoadDictionary();
             }
             catch (DataException e)
             {
@@ -33,9 +38,13 @@ namespace Jammik.Localization
                     Debug.LogError($"{PackagePrefix} {e.Message}");
                 }
             }
-            
         }
-        
+
+        public void ChangeLanguage(SystemLanguage language)
+        {
+            _dictionary = _localizationDictionaryProvider.LoadDictionary(language);
+        }
+
         public string Get(string localizationKey)
         {
             if (_dictionary.ContainsKey(localizationKey))
